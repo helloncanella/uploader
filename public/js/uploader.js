@@ -1,8 +1,11 @@
+var videoURL, subtitleURL;
+
+
 $("#dropRegion").on({
-  dragenter: function (event) {
+  dragenter: function(event) {
     event.stopPropagation();
     event.preventDefault();
-  }, 
+  },
   dragover: function(event) {
     event.stopPropagation();
     event.preventDefault();
@@ -19,12 +22,21 @@ $("#dropRegion").on({
     subtitleIsLoaded = $('#subtitle').hasClass('show');
 
     if (videoIsLoaded && subtitleIsLoaded) {
-      alert("play video");
+
     }
 
   }
 
 })
+
+function getURL(file) {
+
+  var video = document.createElement("video");
+  video.controls = true;
+  document.body.appendChild(video);
+  video.src = (window.URL||window.webkitURL).createObjectURL(file);
+  video.play();
+}
 
 function handleFiles(files) {
   for (var i = 0; i < files.length; i++) {
@@ -39,6 +51,8 @@ function handleFiles(files) {
         if (!$("#subtitle").hasClass("show")) {
           $("#dropRegion h1").text("Now add the the Subtitle")
         }
+        videoURL = getURL(files[i]);
+        console.log(videoURL);
         break;
       case "text/vtt":
         $("#subtitle").addClass("show");
@@ -46,6 +60,7 @@ function handleFiles(files) {
         if (!$("#video").hasClass("show")) {
           $("#dropRegion h1").text("Now add the the Video")
         }
+        subtitleURL = getURL(files[i]);
         break;
       case "application/x-subrip":
         srtToVtt(files[i]);
