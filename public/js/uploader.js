@@ -2,7 +2,7 @@ $("#dropRegion").on({
   dragenter: function (event) {
     event.stopPropagation();
     event.preventDefault();
-  },
+  }, 
   dragover: function(event) {
     event.stopPropagation();
     event.preventDefault();
