@@ -1,5 +1,17 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  .container
+    #dropRegion
+      .text 
+        h1 Drop your video and its subtitle here
+    #video
+      ul.fa-ul
+        li
+          i.fa.fa-check Video is ok
+    #subtitle
+      ul.fa-ul
+        li
+          i.fa.fa-check Subtitle is ok
+           
+    

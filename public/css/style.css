@@ -1,0 +1,19 @@
+body {
+  padding-top: 5vh;
+  font: 14px Helvetica, "Lucida Grande",  Arial, sans-serif; }
+  body .container {
+    margin: 0 auto;
+    width: 62.18%; }
+    body .container #dropRegion {
+      margin: 0 auto;
+      height: 62.18vh;
+      border: 2px dashed gray;
+      display: flex; }
+      body .container #dropRegion .text {
+        text-align: center;
+        margin: auto; }
+    body .container #video, body .container #subtitle {
+      display: none; }
+
+.show {
+  display: flex !important; }
