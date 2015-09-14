@@ -1,6 +1,4 @@
-var videoURL, subtitleURL;
-
-
+var videoFile, binarySubtitle;
 $("#dropRegion").on({
   dragenter: function(event) {
     event.stopPropagation();
@@ -29,41 +27,52 @@ $("#dropRegion").on({
 
 })
 
-function getURL(file) {
-
-  var video = document.createElement("video");
-  video.controls = true;
-  document.body.appendChild(video);
-  video.src = (window.URL||window.webkitURL).createObjectURL(file);
-  video.play();
-}
 
 function handleFiles(files) {
   for (var i = 0; i < files.length; i++) {
     type = files[i].type
+
     switch (type) {
-      //Verifying if the format is supported
+
       case "video/mp4": //XXX Simplify statements
-      case "video/webm":
-      case "video/ogg":
         $("#video").addClass("show");
         //Condition will be true  if subtitle isn't loaded
         if (!$("#subtitle").hasClass("show")) {
           $("#dropRegion h1").text("Now add the the Subtitle")
         }
-        videoURL = getURL(files[i]);
-        console.log(videoURL);
+        $.post('/composeVideo', {
+            "video": "files[i]"
+          },function(){
+            console.log('ok')
+          });
         break;
+
       case "text/vtt":
         $("#subtitle").addClass("show");
         //Condition will be true  if video isn't loaded
         if (!$("#video").hasClass("show")) {
-          $("#dropRegion h1").text("Now add the the Video")
+          $("#dropRegion h1").text("Now add the the Video");
         }
-        subtitleURL = getURL(files[i]);
+
+        var reader = new FileReader();
+        reader.onloadend = function() {
+          $.post('/composeVideo', {
+              "subtitle": "reader.result"
+            },function(){
+              console.log('ok')
+            });
+          console.log(reader.result);
+        }
+        reader.readAsBinaryString(files[i])
+
         break;
+
       case "application/x-subrip":
-        srtToVtt(files[i]);
+        $.get("/srt2vtt", {
+          subtitle: files[i]
+        }, function(converted) {
+
+        })
         break;
       default:
         regex = new RegExp("video\/*");
