@@ -26,14 +26,17 @@ $("#dropRegion").on({
     if (isVideo) {
       var isASupportedFormart = !!~supportedVideos.indexOf(format)
       video = document.createElement('video');
+      videoFile = file;
+
       if (isASupportedFormart) {
         if (!subtitleFile) {
           $("#dropRegion h1").text("Add the subtitle now")
         }
-        videoFile = file
-
       } else {
-        //convert it
+        var videoURL = window.URL.createObjectURL(videoFile);
+        $.get('/videoConversion',{url:videoURL},function(data){
+          console.log("tudo bem camarada");
+        })
       }
     } else if (isSubtitle) {
       subtitleFile = file;
@@ -69,6 +72,7 @@ $("#dropRegion").on({
 
 
       video.src = window.URL.createObjectURL(videoFile);
+      console.log(video.src);
       track.src = subtitleURL;
 
       $('.container').remove();
