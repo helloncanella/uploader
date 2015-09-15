@@ -1,33 +1,34 @@
 var express = require('express');
 var router = express.Router();
-var subtitle, videoFile;
+var srt2vtt = require('srt-to-vtt');
+var fs = require('fs');
+
+
 /* GET home page. */
-
-router.use("/composeVideo", function(req, res, next){
-  if (req.body.hasOwnProperty("subtitle")) {
-    subtitle = req.body.subtitle;
-  };
-  if (req.body.hasOwnProperty("video")) {
-    videoFile = req.body.video;
-  }
-  console.log(videoFile,subtitle);
-  next();
-})
-
 router.get('/', function(req, res) {
   res.render('index', {
     title: 'Express'
   });
 });
 
-
-router.post("/composeVideo", function(req, res) {
-  res.send({redirect: '/srt2vtt'});
-})
-
-
 router.get('/srt2vtt', function(req, res) {
-  res.render('video');
+  name = req.query.fileName;
+  subtitle = req.query.subtitle;
+
+  var srtPath = __dirname+'/../public/subtitles/'+name
+
+  fs.writeFile(srtPath, subtitle, function(err) {
+    if (err) throw err;
+    console.log('It\'s saved!');
+  });
+
+  var vttPath = __dirname+'/../public/subtitles/'+name + '.vtt'
+
+  fs.createReadStream(srtPath)
+    .pipe(srt2vtt())
+    .pipe(fs.createWriteStream(vttPath))
+
+  res.end('/subtitles/'+name + '.vtt');
 });
 
 

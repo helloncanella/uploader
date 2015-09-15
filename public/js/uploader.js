@@ -1,7 +1,7 @@
 var acceptedSubtitles = ["text/vtt", "application/x-subrip"];
 var supportedVideos = ["video/mp4", "video/mp4"];
 
-var videoFile, subtitleFile;
+var videoFile, subtitleFile, subtitleURL;
 
 $("#dropRegion").on({
   dragenter: function(event) {
@@ -25,7 +25,7 @@ $("#dropRegion").on({
 
     if (isVideo) {
       var isASupportedFormart = !!~supportedVideos.indexOf(format)
-
+      video = document.createElement('video');
       if (isASupportedFormart) {
         if (!subtitleFile) {
           $("#dropRegion h1").text("Add the subtitle now")
@@ -36,13 +36,26 @@ $("#dropRegion").on({
         //convert it
       }
     } else if (isSubtitle) {
+      subtitleFile = file;
+      track = document.createElement('track');
       if (format == "text/vtt") {
-        if (!videoFile) {
-          $("#dropRegion h1").text("Add the video now")
-        }
-        subtitleFile = file
+        subtitleURL = window.URL.createObjectURL(subtitleFile);
       } else {
-        //convert it
+        var reader = new FileReader();
+        reader.onload = function(e){
+          console.log(reader.result);
+          $.get("/srt2vtt", {
+            subtitle: reader.result,
+            fileName: file.name
+          }, function(vttURL) {
+            track.src = vttURL;
+            console.log("subtitleURL", vttURL);
+          })
+        }
+        reader.readAsBinaryString(file);
+      }
+      if (!videoFile) {
+        $("#dropRegion h1").text("Add the video now")
       }
     } else {
       alert(format + " isn't supported")
@@ -52,14 +65,27 @@ $("#dropRegion").on({
 
       console.log(videoFile, subtitleFile);
 
-      videoURL = window.URL.createObjectURL(videoFile);
-      subtitleURL = window.URL.createObjectURL(subtitleFile);
 
 
 
-      console.log(videoURL, subtitleURL);
+      video.src = window.URL.createObjectURL(videoFile);
+      track.src = subtitleURL;
 
-      // window.location="/cinema"
+      $('.container').remove();
+
+      $('body').append(video);
+      $('video').append(track);
+
+      $('video').addClass("full");
+
+      $("*").css({
+        "margin": "0",
+        "padding": "0"
+      })
+
+      video.controls = true;
+      video.play();
+
     }
 
   }

@@ -1,6 +1,6 @@
 body {
   padding-top: 5vh;
-  font: 14px Helvetica, "Lucida Grande",  Arial, sans-serif; }
+  font: 14px Helvetica, Lucida Grande, Arial, sans-serif; }
   body .container {
     margin: 0 auto;
     width: 62.18%; }
@@ -12,8 +12,14 @@ body {
       body .container #dropRegion .text {
         text-align: center;
         margin: auto; }
-    body .container #video, body .container #subtitle {
+    body .container #video,
+    body .container #subtitle {
       display: none; }
 
 .show {
   display: flex !important; }
+
+.full {
+  height: 100vh;
+  width: 100vw;
+  object-fit: cover; }
